@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+*.bak*
+node_modules/
+example/crook.js

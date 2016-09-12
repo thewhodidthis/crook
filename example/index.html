@@ -1,0 +1,41 @@
+<!doctype html>
+<html class="html no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>Crook demo</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+  <body>
+    <figure id="figure">
+      <canvas id="canvas" width="640" height="360"></canvas>
+      <figcaption>
+        <p><strong>crook.js</strong> Helps do pixel shifting</p>
+      </figcaption>
+    </figure>
+
+    <noscript>please enable javascript</noscript>
+    <script id="worker" type="javascript/worker">
+      importScripts(location.origin + '/crook.js');
+
+      self.addEventListener('message', function(e) {
+        var filter = new Crook({
+          channel: {
+            x: 1,
+            y: 0
+          },
+          scale: {
+            x: 2,
+            y: 2
+          }
+        });
+
+        self.postMessage({
+          result: filter._run(e.data.source, e.data.lookup)
+        });
+      }, false);
+    </script>
+    <script src="index.js"></script>
+  </body>
+</html>
