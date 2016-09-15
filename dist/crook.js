@@ -64,7 +64,7 @@ Crook.prototype = {
       }
     }
 
-    return sourcePixels;
+    return sourceData;
   },
 
   that: function (source, lookup) {
