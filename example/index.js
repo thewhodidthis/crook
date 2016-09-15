@@ -13,7 +13,7 @@ var workerBlob = new Blob([document.getElementById('worker').textContent]);
 var workerBlobUrl = (window.URL || window.webkitURL).createObjectURL(workerBlob);
 var worker = new Worker(workerBlobUrl);
 
-var isOn = false;
+var isOn = 0;
 var rows = 360;
 var cols = 160;
 var size = {
@@ -57,22 +57,19 @@ for (var row = 0; row < rows; row += 1) {
 canvas.addEventListener('click', function _onClick(e) {
   e.preventDefault();
 
-  if (isOn) {
-    source.drawImage(lookup.canvas, 0, 0);
-
-    isOn = false;
-  } else {
+  if (isOn === 0) {
     source.putImageData(target, 0, 0);
-
-    isOn = true;
+  } else if (isOn === 1) {
+    source.drawImage(lookup.canvas, 0, 0);
+  } else if (isOn === 2) {
+    source.drawImage(master, 0, 0);
   }
+
+  isOn = (isOn + 1) % 3;
 }, false);
 
 worker.addEventListener('message', function _onDoneProcessing(e) {
-  target.data.set(e.data.result);
-  source.putImageData(target, 0, 0);
-
-  isOn = true;
+  target = e.data.result;
 }, false);
 
 master.addEventListener('load', function _onLoad(e) {
