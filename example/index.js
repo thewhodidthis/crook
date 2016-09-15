@@ -5,7 +5,6 @@ var html = document.documentElement;
 var canvas = document.getElementById('canvas');
 var source = canvas.getContext('2d');
 var lookup = canvas.cloneNode().getContext('2d');
-
 var target = source.getImageData(0, 0, canvas.width, canvas.height);
 var master = document.createElement('img');
 
@@ -14,11 +13,8 @@ var workerBlobUrl = (window.URL || window.webkitURL).createObjectURL(workerBlob)
 var worker = new Worker(workerBlobUrl);
 
 var isOn = 0;
-var rows = 360;
-var cols = 160;
-var size = {
-  x: 4,
-  y: 1
+var getRandom = function(max) {
+  return Math.floor(Math.random() * max);
 };
 
 html.className = 'html';
@@ -30,28 +26,24 @@ if (window !== window.top) {
 lookup.fillStyle = '#808080';
 lookup.fillRect(0, 0, canvas.width, canvas.height);
 
-// TODO: draw random lines instead
-for (var row = 0; row < rows; row += 1) {
-  for (var col = 0; col < cols; col += 1) {
-    var x = col * size.x;
-    var y = row * size.y;
+for (var l = 0; l < 100; l += 1) {
+  var x1 = getRandom(canvas.width);
+  var x2 = getRandom(canvas.width);
+  var y1 = getRandom(canvas.height);
+  var y2 = getRandom(canvas.height);
 
-    if (row % 2 === 0) {
-      if (col % 2 === 0) {
-        lookup.fillStyle = '#808080';
-      } else {
-        lookup.fillStyle = '#0f0';
-      }
-    } else {
-      if (col % 2 === 0) {
-        lookup.fillStyle = '#f00';
-      } else {
-        lookup.fillStyle = '#808080';
-      }
-    }
-
-    lookup.fillRect(x, y, size.x, size.y);
+  if (l % 2 === 0) {
+    lookup.strokeStyle = '#f00';
+  } else {
+    lookup.strokeStyle = '#0f0';
   }
+
+  lookup.lineWidth = getRandom(5) + 1;
+
+  lookup.beginPath();
+  lookup.moveTo(x1, y1);
+  lookup.lineTo(x2, y2);
+  lookup.stroke();
 }
 
 canvas.addEventListener('click', function _onClick(e) {
