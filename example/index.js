@@ -73,5 +73,5 @@ master.addEventListener('load', function _onLoad(e) {
   });
 }, false);
 
-master.setAttribute('src', '/sprite.jpg');
+master.setAttribute('src', '/master.jpg');
 
