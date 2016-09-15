@@ -1,6 +1,8 @@
 'use strict';
 
 function Crook(options) {
+
+  // Get defaults
   var defaults = Object.create(Crook.defaults);
 
   // Store settings
@@ -12,6 +14,58 @@ function Crook(options) {
 Crook.prototype = {
   constructor: Crook,
 
+  _run: function (sourceData, lookupData) {
+
+    // Displacement map width
+    var lookupW = lookupData.width;
+
+    // Displacement map height
+    var lookupH = lookupData.height;
+
+    // Displacement map area
+    var lookupArea = lookupW * lookupH;
+
+    // Displacement map colors
+    var lookupPixels = lookupData.data;
+
+    // Source colors rgba
+    var sourcePixels = sourceData.data;
+
+    // Source colors 32bit
+    var sourceView32 = new Int32Array(sourcePixels.buffer);
+
+    for (var y = 0; y < lookupH; y += 1) {
+      for (var x = 0; x < lookupW; x += 1) {
+        var targetIdx = x + y * lookupW;
+        var lookupIdx = targetIdx * 4;
+
+        // Shift amount horizontal
+        var sx = x + this.getShift(lookupPixels[lookupIdx + this.channel.x], this.scale.x);
+
+        // Shift amount vertical
+        var sy = y + this.getShift(lookupPixels[lookupIdx + this.channel.y], this.scale.y);
+
+        // Shift index
+        var sourceIdx = sx + sy * lookupW;
+
+        // Wrap around the end
+        if (sourceIdx < 0) {
+          sourceIdx = sourceIdx + lookupArea;
+        }
+
+        // Wrap around the beginning
+        if (sourceIdx > lookupArea) {
+          sourceIdx = sourceIdx % lookupArea;
+        }
+
+        // Paste in place
+        sourceView32[targetIdx] = sourceView32[sourceIdx];
+      }
+    }
+
+    return sourcePixels;
+  },
+
   that: function (source, lookup) {
 
     // TODO: Check type of args, allow images?
@@ -19,48 +73,6 @@ Crook.prototype = {
     var lookupData = lookup.getImageData(0, 0, lookup.canvas.width, lookup.canvas.height);
 
     return this._run(sourceData, lookupData);
-  },
-
-  _run: function (sourceData, lookupData) {
-
-    // TODO: Check type of args?
-    var sourcePixels = sourceData.data;
-    var lookupPixels = lookupData.data;
-
-    var targetBuffer = new ArrayBuffer(sourcePixels.length);
-    var targetPixels = new Uint8ClampedArray(targetBuffer);
-
-    var targetView32 = new Int32Array(targetBuffer);
-    var sourceView32 = new Int32Array(sourcePixels.buffer);
-
-    var lookupW = lookupData.width;
-    var lookupH = lookupData.height;
-
-    var lookupArea = lookupPixels.length * 0.25;
-
-    for (var y = 0; y < lookupH; y += 1) {
-      for (var x = 0; x < lookupW; x += 1) {
-        var targetIdx = x + y * lookupW;
-        var lookupIdx = targetIdx * 4;
-
-        var sx = x + this.getShift(lookupPixels[lookupIdx + this.channel.x], this.scale.x);
-        var sy = y + this.getShift(lookupPixels[lookupIdx + this.channel.y], this.scale.y);
-
-        var sourceIdx = sx + sy * lookupW;
-
-        if (sourceIdx < 0) {
-          sourceIdx = sourceIdx + lookupArea;
-        }
-
-        if (sourceIdx > lookupArea) {
-          sourceIdx = sourceIdx % lookupArea;
-        }
-
-        targetView32[targetIdx] = sourceView32[sourceIdx];
-      }
-    }
-
-    return targetPixels;
   },
 
   getShift: function (color, scale) {
