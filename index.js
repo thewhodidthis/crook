@@ -34,6 +34,11 @@ Crook.prototype = {
     // Source colors 32bit
     var sourceView32 = new Int32Array(sourcePixels.buffer);
 
+    // Output buffer
+    var target = new ArrayBuffer(sourcePixels.length);
+    var targetPixels = new Uint8ClampedArray(target);
+    var targetView32 = new Int32Array(target);
+
     for (var y = 0; y < lookupH; y += 1) {
       for (var x = 0; x < lookupW; x += 1) {
         var targetIdx = x + y * lookupW;
@@ -59,11 +64,11 @@ Crook.prototype = {
         }
 
         // Paste in place
-        sourceView32[targetIdx] = sourceView32[sourceIdx];
+        targetView32[targetIdx] = sourceView32[sourceIdx];
       }
     }
 
-    return sourceData;
+    return targetPixels;
   },
 
   that: function (source, lookup) {
@@ -76,10 +81,7 @@ Crook.prototype = {
   },
 
   getShift: function (color, scale) {
-    var ratio = (color / 0xFF * 2) - 1;
-    var shift = ratio * scale | 0;
-
-    return shift;
+    return scale * (color / 0xFF * 2) - 1 | 0;
   }
 };
 
