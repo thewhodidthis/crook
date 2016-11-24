@@ -32,7 +32,7 @@
         });
 
         self.postMessage({
-          result: filter._run(e.data.source, e.data.lookup)
+          result: filter.run(e.data.source, e.data.lookup)
         });
       }, false);
     </script>
