@@ -4,7 +4,6 @@
   "description": "Helps do pixel shifting",
   "keywords": [
     "canvas",
-    "picture",
     "pixels",
     "shifting"
   ],
@@ -22,7 +21,7 @@
     "example": "example"
   },
   "config": {
-    "remote": "thewhodidthis@umfufu:www/example/crook/"
+    "remote": "thewhodidthis@zazie:www/example/crook/"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
