@@ -7,8 +7,8 @@
     "pixels",
     "shifting"
   ],
-  "jsnext:main": "index.es",
   "main": "index.js",
+  "module": "index.es",
   "homepage": "https://github.com/thewhodidthis/crook#readme",
   "repository": {
     "type": "git",
