@@ -1,14 +1,15 @@
 <!doctype html>
-<html class="html no-js">
+<html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-    <title>Crook demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>&middot; Crook &middot;</title>
+    <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="index.css" />
   </head>
 
   <body>
-    <figure id="figure">
+    <figure>
       <canvas id="canvas" width="640" height="360"></canvas>
       <figcaption>
         <p><strong>crook.js</strong> Helps do pixel shifting</p>
@@ -20,21 +21,21 @@
       importScripts(location.origin + '/crook.js');
 
       self.addEventListener('message', function(e) {
-        var filter = new Crook({
+        const settings = {
           channel: {
             x: 1,
-            y: 0
+            y: 0,
           },
           scale: {
             x: 320,
-            y: -360
-          }
-        });
+            y: -360,
+          },
+        };
 
-        self.postMessage({
-          result: filter.run(e.data.source, e.data.lookup)
-        });
-      }, false);
+        const filter = crook(settings);
+
+        self.postMessage({ result: filter(e.data.source, e.data.lookup) });
+      });
     </script>
     <script src="index.js"></script>
   </body>
