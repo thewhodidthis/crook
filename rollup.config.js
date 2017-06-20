@@ -8,9 +8,7 @@ export default {
   targets: [
     {
       format: 'iife',
-      indent: true,
-      sourceMap: true,
-      moduleName: 'Crook',
+      moduleName: 'crook',
       dest: 'dist/crook.js'
     },
     {
