@@ -24,7 +24,7 @@
     "remote": "thewhodidthis@zazie:www/example/crook/"
   },
   "scripts": {
-    "test": "browserify test/*.js | testling -x open",
+    "test": "node test",
     "lint": "eslint index.es test/*.js",
     "start": "rollup -c && uglifyjs dist/crook.js -cmo dist/crook.min.js",
     "preexample": "npm start",
