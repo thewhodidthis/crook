@@ -1,36 +1,32 @@
-function Crook(options) {
-  // Set options
-  this.options = Object.assign({}, Crook.defaults, options);
-  this.channel = this.options.channel;
-  this.scale = this.options.scale;
-}
+const v2 = { x: 0, y: 0 };
+const shift = (color, scale) => Math.floor((scale * ((color / 0xFF) * 2)) - 1);
 
-Crook.prototype = {
-  constructor: Crook,
+const Crook = (options) => {
+  const settings = Object.assign({
+    // Which color channel to use for calculating displacement
+    // 0: Red, 1: Green, 2: Blue, 3: Alpha
+    channel: v2,
 
-  run(sourceData, lookupData) {
-    // Displacement map width
-    const lookupW = lookupData.width;
+    // The multiplier to use for scaling the x and y displacement values from the lookup calculation
+    scale: v2,
+  }, options);
 
-    // Displacement map height
-    const lookupH = lookupData.height;
-
-    // Displacement map area
+  // Expects and churns out `ImageData`
+  return (source, lookup) => {
+    // Displacement map
+    const lookupW = lookup.width;
+    const lookupH = lookup.height;
     const lookupArea = lookupW * lookupH;
+    const lookupData = lookup.data;
 
-    // Displacement map colors
-    const lookupPixels = lookupData.data;
+    // Source pixels
+    const sourceW = source.width;
+    const sourceH = source.height;
+    const sourceView32 = new Int32Array(source.data.buffer);
 
-    // Source colors rgba
-    const sourcePixels = sourceData.data;
-
-    // Source colors 32bit
-    const sourceView32 = new Int32Array(sourcePixels.buffer);
-
-    // Output buffer
-    const target = new ArrayBuffer(sourcePixels.length);
-    const targetPixels = new Uint8ClampedArray(target);
-    const targetView32 = new Int32Array(target);
+    // Output pixels
+    const target = new ImageData(sourceW, sourceH);
+    const targetView32 = new Int32Array(target.data.buffer);
 
     for (let y = 0; y < lookupH; y += 1) {
       for (let x = 0; x < lookupW; x += 1) {
@@ -38,10 +34,10 @@ Crook.prototype = {
         const lookupIdx = targetIdx * 4;
 
         // Shift amount horizontal
-        const sx = x + this.getShift(lookupPixels[lookupIdx + this.channel.x], this.scale.x);
+        const sx = x + shift(lookupData[lookupIdx + settings.channel.x], settings.scale.x);
 
         // Shift amount vertical
-        const sy = y + this.getShift(lookupPixels[lookupIdx + this.channel.y], this.scale.y);
+        const sy = y + shift(lookupData[lookupIdx + settings.channel.y], settings.scale.y);
 
         // Shift index
         let sourceIdx = sx + (sy * lookupW);
@@ -61,36 +57,9 @@ Crook.prototype = {
       }
     }
 
-    return targetPixels;
-  },
-
-  that(source, lookup) {
-    // TODO: Check type of args, allow images?
-    const sourceData = source.getImageData(0, 0, source.canvas.width, source.canvas.height);
-    const lookupData = lookup.getImageData(0, 0, lookup.canvas.width, lookup.canvas.height);
-
-    return this.run(sourceData, lookupData);
-  },
-
-  getShift(color, scale) {
-    return Math.floor((scale * ((color / 0xFF) * 2)) - 1);
-  }
-};
-
-Crook.defaults = {
-
-  // Which color channel to use for calculating displacement
-  // 0: Red, 1: Green, 2: Blue, 3: Alpha
-  channel: {
-    x: 0,
-    y: 0
-  },
-
-  // The multiplier to use for scaling the x and y displacement values from the lookup calculation
-  scale: {
-    x: 0,
-    y: 0
-  }
+    return target;
+  };
 };
 
 export default Crook;
+
