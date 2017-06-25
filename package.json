@@ -1,6 +1,6 @@
 {
   "name": "@thewhodidthis/crook",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Helps with pixel shifting",
   "keywords": [
     "canvas",
