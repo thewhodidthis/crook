@@ -3,7 +3,7 @@
 
 ### Setup
 ```sh
-npm install thewhodidthis/crook --save
+npm install thewhodidthis/crook
 ```
 
 ### Usage
@@ -16,4 +16,3 @@ npm run example
 # Open using default browser
 open http://localhost:8000
 ```
-
