@@ -20,7 +20,7 @@
     <script id="worker" type="javascript/worker">
       importScripts(location.origin + '/crook.js');
 
-      self.addEventListener('message', function(e) {
+      self.addEventListener('message', (e) => {
         const filter = Crook({
           channel: {
             x: 1,
