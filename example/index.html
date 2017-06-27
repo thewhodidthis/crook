@@ -17,24 +17,6 @@
     </figure>
 
     <noscript><small><em>please enable javascript</em></small></noscript>
-    <script id="worker" type="javascript/worker">
-      importScripts(location.origin + '/crook.js');
-
-      self.addEventListener('message', (e) => {
-        const filter = Crook({
-          channel: {
-            x: 1,
-            y: 0,
-          },
-          scale: {
-            x: 320,
-            y: -360,
-          },
-        });
-
-        self.postMessage({ result: filter(e.data.source, e.data.lookup) });
-      });
-    </script>
     <script src="index.js"></script>
   </body>
 </html>
