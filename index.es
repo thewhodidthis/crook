@@ -1,65 +1,69 @@
-const v2 = { x: 0, y: 0 };
-const shift = (color, scale) => Math.floor((scale * ((color / 0xFF) * 2)) - 1);
+const v2 = { x: 0, y: 0 }
+const blank = [0, 0, 0, 255]
+const modes = ['IGNORE', 'CLAMP', 'WRAP']
+
+const shift = (color, scale) => {
+  const ratio = scale * (color - 128) / 256
+
+  return Math.sign(ratio) * Math.round(Math.abs(ratio))
+}
 
 const Crook = (options) => {
-  const settings = Object.assign({
+  const { channel, scale, mode: type } = Object.assign({
     // Which color channel to use for calculating displacement
     // 0: Red, 1: Green, 2: Blue, 3: Alpha
     channel: v2,
 
-    // The multiplier to use for scaling the x and y displacement values from the lookup calculation
+    // The multiplier to use for scaling the x and y displacement
+    // values from the lookup calculation
     scale: v2,
-  }, options);
 
-  // Expects and churns out `ImageData`
-  return (source, lookup) => {
-    // Displacement map
-    const lookupW = lookup.width;
-    const lookupH = lookup.height;
-    const lookupArea = lookupW * lookupH;
-    const lookupData = lookup.data;
+    // Do what with empty pixels?
+    mode: 0
+  }, options)
 
-    // Source pixels
-    const sourceW = source.width;
-    const sourceH = source.height;
-    const sourceView32 = new Int32Array(source.data.buffer);
+  const mode = modes[parseInt(type, 10) % modes.length]
 
-    // Output pixels
-    const target = new ImageData(sourceW, sourceH);
-    const targetView32 = new Int32Array(target.data.buffer);
+  // Expects and returns `ImageData`
+  return (source, { width: w, height: h, data: lookup } = ImageData) => {
+    const target = new ImageData(source.width, source.height)
+    const targetView = new Int32Array(target.data.buffer)
+    const sourceView = new Int32Array(source.data.buffer)
 
-    for (let y = 0; y < lookupH; y += 1) {
-      for (let x = 0; x < lookupW; x += 1) {
-        const targetIdx = x + (y * lookupW);
-        const lookupIdx = targetIdx * 4;
+    for (let i = 0, max = w * h; i < max; i += 1) {
+      const j = i * 4
 
-        // Shift amount horizontal
-        const sx = x + shift(lookupData[lookupIdx + settings.channel.x], settings.scale.x);
+      const x1 = i % w
+      const y1 = Math.floor(i / w)
 
-        // Shift amount vertical
-        const sy = y + shift(lookupData[lookupIdx + settings.channel.y], settings.scale.y);
+      let x2 = x1 + shift(lookup[j + channel.x], scale.x)
+      let y2 = y1 + shift(lookup[j + channel.y], scale.y)
 
-        // Shift index
-        let sourceIdx = sx + (sy * lookupW);
-
-        // Wrap around the end
-        if (sourceIdx < 0) {
-          sourceIdx += lookupArea;
+      if (mode !== 'IGNORE') {
+        if (x2 < 0) {
+          x2 = mode === 'CLAMP' ? 0 : x2 + w
         }
 
-        // Wrap around the beginning
-        if (sourceIdx > lookupArea) {
-          sourceIdx %= lookupArea;
+        if (y2 < 0) {
+          y2 = mode === 'CLAMP' ? 0 : y2 + h
         }
 
-        // Paste in place
-        targetView32[targetIdx] = sourceView32[sourceIdx];
+        if (x2 >= w) {
+          x2 = mode === 'CLAMP' ? w - 1 : x2 - w
+        }
+
+        if (y2 >= h) {
+          y2 = mode === 'CLAMP' ? h - 1 : y2 - h
+        }
       }
+
+      const k = x2 >= 0 && x2 < w && y2 >= 0 && y2 < h ? x2 + (y2 * w) : -1
+
+      targetView[i] = (k && sourceView[k]) || blank
     }
 
-    return target;
-  };
-};
+    return target
+  }
+}
 
-export default Crook;
-
+export default Crook
