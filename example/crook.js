@@ -1,9 +1,13 @@
 var Crook = (function () {
 'use strict';
 
-var v2 = { x: 0, y: 0 };
+var pixel = new ImageData(1, 1);
+var point = { x: 0, y: 0 };
 var blank = [0, 0, 0, 255];
-var modes = ['IGNORE', 'CLAMP', 'WRAP'];
+
+var clamp = function (v, max) { return (v >= max ? max - 1 : Math.max(v, 0)); };
+var pleat = function (v, max) { return (v >= max || v < 0 ? v + (max * Math.sign(v)) : v); };
+var skirt = function (v, max) { return (v >= max || v < 0 ? NaN : v); };
 
 var shift = function (color, scale) {
   var ratio = scale * (color - 128) / 256;
@@ -11,66 +15,42 @@ var shift = function (color, scale) {
   return Math.sign(ratio) * Math.round(Math.abs(ratio))
 };
 
-var Crook = function (options) {
-  var ref = Object.assign({
-    // Which color channel to use for calculating displacement
-    // 0: Red, 1: Green, 2: Blue, 3: Alpha
-    channel: v2,
+var Crook = function (ref) {
+  if ( ref === void 0 ) ref = {};
+  var channel = ref.channel; if ( channel === void 0 ) channel = point;
+  var scale = ref.scale; if ( scale === void 0 ) scale = point;
+  var mode = ref.mode; if ( mode === void 0 ) mode = 0;
 
-    // The multiplier to use for scaling the x and y displacement
-    // values from the lookup calculation
-    scale: v2,
-
-    // Do what with empty pixels?
-    mode: 0
-  }, options);
-  var channel = ref.channel;
-  var scale = ref.scale;
-  var type = ref.mode;
-
-  var mode = modes[parseInt(type, 10) % modes.length];
+  // Wrap how?
+  var round = mode ? mode === 1 ? clamp : pleat : skirt;
 
   // Expects and returns `ImageData`
   return function (source, ref) {
-    if ( ref === void 0 ) ref = ImageData;
+    if ( source === void 0 ) source = pixel;
+    if ( ref === void 0 ) ref = pixel;
     var w = ref.width;
     var h = ref.height;
     var lookup = ref.data;
 
-    var target = new ImageData(source.width, source.height);
+    var target = new ImageData(w, h);
     var targetView = new Int32Array(target.data.buffer);
     var sourceView = new Int32Array(source.data.buffer);
 
     for (var i = 0, max = w * h; i < max; i += 1) {
       var j = i * 4;
 
-      var x1 = i % w;
-      var y1 = Math.floor(i / w);
+      var x = i % w;
+      var y = Math.floor(i / w);
 
-      var x2 = x1 + shift(lookup[j + channel.x], scale.x);
-      var y2 = y1 + shift(lookup[j + channel.y], scale.y);
+      var x1 = x + shift(lookup[j + channel.x], scale.x);
+      var y1 = y + shift(lookup[j + channel.y], scale.y);
 
-      if (mode !== 'IGNORE') {
-        if (x2 < 0) {
-          x2 = mode === 'CLAMP' ? 0 : x2 + w;
-        }
+      var x2 = round(x1, w);
+      var y2 = round(y1, h);
 
-        if (y2 < 0) {
-          y2 = mode === 'CLAMP' ? 0 : y2 + h;
-        }
+      var k = x2 + (y2 * w);
 
-        if (x2 >= w) {
-          x2 = mode === 'CLAMP' ? w - 1 : x2 - w;
-        }
-
-        if (y2 >= h) {
-          y2 = mode === 'CLAMP' ? h - 1 : y2 - h;
-        }
-      }
-
-      var k = x2 >= 0 && x2 < w && y2 >= 0 && y2 < h ? x2 + (y2 * w) : -1;
-
-      targetView[i] = (k && sourceView[k]) || blank;
+      targetView[i] = k >= 0 ? sourceView[k] : blank;
     }
 
     return target
