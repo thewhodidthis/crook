@@ -1,6 +1,10 @@
-const v2 = { x: 0, y: 0 }
+const pixel = new ImageData(1, 1)
+const point = { x: 0, y: 0 }
 const blank = [0, 0, 0, 255]
-const modes = ['IGNORE', 'CLAMP', 'WRAP']
+
+const clamp = (v, max) => (v >= max ? max - 1 : Math.max(v, 0))
+const pleat = (v, max) => (v >= max || v < 0 ? v + (max * Math.sign(v)) : v)
+const skirt = (v, max) => (v >= max || v < 0 ? NaN : v)
 
 const shift = (color, scale) => {
   const ratio = scale * (color - 128) / 256
@@ -8,58 +12,31 @@ const shift = (color, scale) => {
   return Math.sign(ratio) * Math.round(Math.abs(ratio))
 }
 
-const Crook = (options) => {
-  const { channel, scale, mode: type } = Object.assign({
-    // Which color channel to use for calculating displacement
-    // 0: Red, 1: Green, 2: Blue, 3: Alpha
-    channel: v2,
-
-    // The multiplier to use for scaling the x and y displacement
-    // values from the lookup calculation
-    scale: v2,
-
-    // Do what with empty pixels?
-    mode: 0
-  }, options)
-
-  const mode = modes[parseInt(type, 10) % modes.length]
+const Crook = ({ channel = point, scale = point, mode = 0 } = {}) => {
+  // Wrap how?
+  const round = mode ? mode === 1 ? clamp : pleat : skirt
 
   // Expects and returns `ImageData`
-  return (source, { width: w, height: h, data: lookup } = ImageData) => {
-    const target = new ImageData(source.width, source.height)
+  return (source = pixel, { width: w, height: h, data: lookup } = pixel) => {
+    const target = new ImageData(w, h)
     const targetView = new Int32Array(target.data.buffer)
     const sourceView = new Int32Array(source.data.buffer)
 
     for (let i = 0, max = w * h; i < max; i += 1) {
       const j = i * 4
 
-      const x1 = i % w
-      const y1 = Math.floor(i / w)
+      const x = i % w
+      const y = Math.floor(i / w)
 
-      let x2 = x1 + shift(lookup[j + channel.x], scale.x)
-      let y2 = y1 + shift(lookup[j + channel.y], scale.y)
+      const x1 = x + shift(lookup[j + channel.x], scale.x)
+      const y1 = y + shift(lookup[j + channel.y], scale.y)
 
-      if (mode !== 'IGNORE') {
-        if (x2 < 0) {
-          x2 = mode === 'CLAMP' ? 0 : x2 + w
-        }
+      const x2 = round(x1, w)
+      const y2 = round(y1, h)
 
-        if (y2 < 0) {
-          y2 = mode === 'CLAMP' ? 0 : y2 + h
-        }
+      const k = x2 + (y2 * w)
 
-        if (x2 >= w) {
-          x2 = mode === 'CLAMP' ? w - 1 : x2 - w
-        }
-
-        if (y2 >= h) {
-          y2 = mode === 'CLAMP' ? h - 1 : y2 - h
-        }
-      }
-
-      const k = x2 >= 0 && x2 < w && y2 >= 0 && y2 < h ? x2 + (y2 * w) : -1
-
-      targetView[i] = (k && sourceView[k]) || blank
+      targetView[i] = k >= 0 ? sourceView[k] : blank
     }
 
     return target
