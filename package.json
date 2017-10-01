@@ -1,6 +1,6 @@
 {
   "name": "@thewhodidthis/crook",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Helps with pixel shifting",
   "main": "index.js",
   "module": "index.es",
