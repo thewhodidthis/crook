@@ -14,7 +14,7 @@ var shift = function (color, scale) {
   return Math.sign(ratio) * Math.round(Math.abs(ratio))
 };
 
-var Crook = function (ref) {
+var crook = function (ref) {
   if ( ref === void 0 ) ref = {};
   var channel = ref.channel; if ( channel === void 0 ) channel = point;
   var scale = ref.scale; if ( scale === void 0 ) scale = point;
@@ -56,5 +56,5 @@ var Crook = function (ref) {
   }
 };
 
-module.exports = Crook;
+module.exports = crook;
 

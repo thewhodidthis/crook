@@ -12,7 +12,7 @@ const shift = (color, scale) => {
   return Math.sign(ratio) * Math.round(Math.abs(ratio))
 }
 
-const Crook = ({ channel = point, scale = point, mode = 0 } = {}) => {
+const crook = ({ channel = point, scale = point, mode = 0 } = {}) => {
   // Wrap how?
   const round = mode ? mode === 1 ? clamp : pleat : skirt
 
@@ -43,4 +43,4 @@ const Crook = ({ channel = point, scale = point, mode = 0 } = {}) => {
   }
 }
 
-export default Crook
+export default crook
