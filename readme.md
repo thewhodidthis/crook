@@ -9,7 +9,6 @@ npm i thewhodidthis/crook
 
 ### Usage
 ```js
-
 import crook from '@thewhodidthis/crook'
 
 const source = document.createElement('img')
@@ -28,7 +27,7 @@ const filter = crook({
     x: 179,
     y: 0
   }
-});
+})
 
 source.addEventListener('load', () => {
   buffer.drawImage(source, 0, 0)
