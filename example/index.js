@@ -1,8 +1,6 @@
 (function () {
 'use strict';
 
-var TAU = Math.PI * 2;
-
 var images = document.querySelectorAll('canvas img');
 var boards = document.querySelectorAll('canvas');
 
@@ -10,6 +8,7 @@ if (window !== window.top) {
   document.documentElement.classList.add('is-iframe');
 }
 
+var TAU = Math.PI * 2;
 var params = [
   {
     channel: {
@@ -99,8 +98,9 @@ var noiz = function (lookup) {
   var ref = lookup.canvas;
   var w = ref.width;
   var h = ref.height;
+  var area = w * h;
 
-  for (var i = 0, area = w * h; i < area; i += 1) {
+  for (var i = 0; i < area; i += 1) {
     var x = i % w;
     var y = Math.floor(i / w);
     var c = Math.floor(Math.random() * 255);
@@ -119,48 +119,51 @@ var fork = function (lookup) {
   }
 };
 
-Array.from(images).map(function (img) { return img.alt; }).forEach(function (file, i) {
+Array.from(images).map(function (img) { return img.alt; }).forEach(function (src, i) {
   var config = params[i];
   var canvas = boards[i];
-  var master = canvas.getContext('2d');
-  var lookup = canvas.cloneNode().getContext('2d');
+  var target = canvas.getContext('2d');
+  var shadow = canvas.cloneNode().getContext('2d');
 
-  var worker = new Worker('worker.js');
-  var source = document.createElement('img');
+  var w = canvas.width;
+  var h = canvas.height;
 
-  lookup.fillStyle = 'rgb(128, 128, 128)';
-  lookup.fillRect(0, 0, canvas.width, canvas.height);
+  shadow.fillStyle = 'rgb(128, 128, 128)';
+  shadow.fillRect(0, 0, w, h);
 
   switch (i) {
   case 0:
-    warp(lookup);
+    warp(shadow);
     break
   case 1:
-    zoom(lookup);
+    zoom(shadow);
     break
   case 2:
-    noiz(lookup);
+    noiz(shadow);
     break
   default:
-    fork(lookup);
+    fork(shadow);
     break
   }
 
+  var worker = new Worker('worker.js');
+
   worker.addEventListener('message', function (e) {
-    master.putImageData(e.data.result, 0, 0);
+    target.putImageData(e.data.result, 0, 0);
   });
 
-  source.addEventListener('load', function () {
-    master.drawImage(source, 0, 0);
+  var master = document.createElement('img');
 
-    worker.postMessage({
-      config: config,
-      source: master.getImageData(0, 0, canvas.width, canvas.height),
-      lookup: lookup.getImageData(0, 0, canvas.width, canvas.height)
-    });
+  master.addEventListener('load', function () {
+    target.drawImage(master, 0, 0);
+
+    var source = target.getImageData(0, 0, w, h);
+    var lookup = shadow.getImageData(0, 0, w, h);
+
+    worker.postMessage({ config: config, source: source, lookup: lookup });
   });
 
-  source.setAttribute('src', file);
+  master.setAttribute('src', src);
 });
 
 }());

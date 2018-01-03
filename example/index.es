@@ -1,5 +1,3 @@
-const TAU = Math.PI * 2
-
 const images = document.querySelectorAll('canvas img')
 const boards = document.querySelectorAll('canvas')
 
@@ -7,6 +5,7 @@ if (window !== window.top) {
   document.documentElement.classList.add('is-iframe')
 }
 
+const TAU = Math.PI * 2
 const params = [
   {
     channel: {
@@ -90,8 +89,9 @@ const zoom = (lookup) => {
 
 const noiz = (lookup) => {
   const { width: w, height: h } = lookup.canvas
+  const area = w * h
 
-  for (let i = 0, area = w * h; i < area; i += 1) {
+  for (let i = 0; i < area; i += 1) {
     const x = i % w
     const y = Math.floor(i / w)
     const c = Math.floor(Math.random() * 255)
@@ -110,46 +110,48 @@ const fork = (lookup) => {
   }
 }
 
-Array.from(images).map(img => img.alt).forEach((file, i) => {
+Array.from(images).map(img => img.alt).forEach((src, i) => {
   const config = params[i]
   const canvas = boards[i]
-  const master = canvas.getContext('2d')
-  const lookup = canvas.cloneNode().getContext('2d')
+  const target = canvas.getContext('2d')
+  const shadow = canvas.cloneNode().getContext('2d')
 
-  const worker = new Worker('worker.js')
-  const source = document.createElement('img')
+  const { width: w, height: h } = canvas
 
-  lookup.fillStyle = 'rgb(128, 128, 128)'
-  lookup.fillRect(0, 0, canvas.width, canvas.height)
+  shadow.fillStyle = 'rgb(128, 128, 128)'
+  shadow.fillRect(0, 0, w, h)
 
   switch (i) {
   case 0:
-    warp(lookup)
+    warp(shadow)
     break
   case 1:
-    zoom(lookup)
+    zoom(shadow)
     break
   case 2:
-    noiz(lookup)
+    noiz(shadow)
     break
   default:
-    fork(lookup)
+    fork(shadow)
     break
   }
 
+  const worker = new Worker('worker.js')
+
   worker.addEventListener('message', (e) => {
-    master.putImageData(e.data.result, 0, 0)
+    target.putImageData(e.data.result, 0, 0)
   })
 
-  source.addEventListener('load', () => {
-    master.drawImage(source, 0, 0)
+  const master = document.createElement('img')
 
-    worker.postMessage({
-      config,
-      source: master.getImageData(0, 0, canvas.width, canvas.height),
-      lookup: lookup.getImageData(0, 0, canvas.width, canvas.height)
-    })
+  master.addEventListener('load', () => {
+    target.drawImage(master, 0, 0)
+
+    const source = target.getImageData(0, 0, w, h)
+    const lookup = shadow.getImageData(0, 0, w, h)
+
+    worker.postMessage({ config, source, lookup })
   })
 
-  source.setAttribute('src', file)
+  master.setAttribute('src', src)
 })
