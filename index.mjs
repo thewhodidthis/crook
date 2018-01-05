@@ -41,7 +41,7 @@ const crook = ({ channel = { x: 0, y: 0 }, scale = channel, mode = 0 } = {}) => 
       // Find color map index at pixel coords
       const k = x2 + (y2 * w)
 
-      // Replace input data with color map data at index, or a blank pixel if index below zero
+      // Replace input data with color map data at index, or a blank pixel if index negative
       bitmap[i] = k >= 0 ? mirror[k] : [0, 0, 0, 255]
     }
 

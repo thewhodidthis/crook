@@ -12,8 +12,7 @@ var shift = function (color, scale) {
   return Math.sign(ratio) * Math.round(Math.abs(ratio))
 };
 
-// Set up with number of splits (resolution),
-// get a lambda for processing each data frame in return
+// Extract options for color channel, scaling across each axis, edge work type
 var crook = function (ref) {
   if ( ref === void 0 ) ref = {};
   var channel = ref.channel; if ( channel === void 0 ) channel = { x: 0, y: 0 };
@@ -23,13 +22,13 @@ var crook = function (ref) {
   // Wrap how?
   var round = mode ? mode === 1 ? clamp : pleat : skirt;
 
-  // Expects and returns an `ImageData` like object
-  return function (source, lookup) {
-    if ( source === void 0 ) source = { data: [], width: 0, height: 0 };
-    if ( lookup === void 0 ) lookup = source;
+  // Expects and returns an `ImageData` like object plus a color map of similar type
+  return function (target, lookup) {
+    if ( target === void 0 ) target = { data: [], width: 0, height: 0 };
+    if ( lookup === void 0 ) lookup = target;
 
-    var target = new Int32Array(source.data.buffer);
-    var mirror = new Int32Array(target);
+    var bitmap = new Int32Array(target.data.buffer);
+    var mirror = new Int32Array(bitmap);
 
     // Extract color map dimensions
     var w = lookup.width;
@@ -39,10 +38,8 @@ var crook = function (ref) {
       // In steps of four - r/g/b/a
       var j = i * 4;
 
-      // Horizontal
+      // Calculate pixel coords
       var x = i % w;
-
-      // Vertical
       var y = Math.floor(i / w);
 
       // Process coords
@@ -52,14 +49,14 @@ var crook = function (ref) {
       var x2 = round(x1, w);
       var y2 = round(y1, h);
 
-      // Color map index
+      // Find color map index at pixel coords
       var k = x2 + (y2 * w);
 
-      // Replace input data with color map data or a blank pixel
-      target[i] = k >= 0 ? mirror[k] : [0, 0, 0, 255];
+      // Replace input data with color map data at index, or a blank pixel if index negative
+      bitmap[i] = k >= 0 ? mirror[k] : [0, 0, 0, 255];
     }
 
-    return source
+    return target
   }
 };
 
