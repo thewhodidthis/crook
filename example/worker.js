@@ -1,4 +1,4 @@
-importScripts('filter.js')
+importScripts('crook.js')
 
 self.addEventListener('message', (e) => {
   const filter = crook(e.data.config)
