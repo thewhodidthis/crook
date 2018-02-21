@@ -17,7 +17,7 @@
     "test": "node test.js",
     "prestart": "eslint index.mjs",
     "start": "rollup -f cjs index.mjs > index.js",
-    "preexample": "eslint example/index.es",
+    "preexample": "eslint example/index.js",
     "example": "rollup -f iife -n crook index.mjs > example/crook.js"
   },
   "eslintConfig": {
