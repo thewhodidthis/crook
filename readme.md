@@ -1,5 +1,5 @@
 ## Crook
-> Helps with pixel shifting
+> For displacement mapping
 
 ### Setup
 ```sh
