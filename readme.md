@@ -1,5 +1,5 @@
 ## Crook
-> Helps do pixel shifting
+> Helps with pixel shifting
 
 ### Setup
 ```sh
