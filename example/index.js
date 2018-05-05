@@ -54,13 +54,13 @@ const params = [
 
 const warp = (lookup) => {
   const { width: w, height: h } = lookup.canvas
-  const gradient = lookup.createLinearGradient(0, 0, w, 0)
+  const gradH = lookup.createLinearGradient(0, 0, w, 0)
 
-  gradient.addColorStop(0, '#000')
-  gradient.addColorStop(0.5, '#fff')
-  gradient.addColorStop(1, '#000')
+  gradH.addColorStop(0, '#000')
+  gradH.addColorStop(0.5, '#fff')
+  gradH.addColorStop(1, '#000')
 
-  lookup.fillStyle = gradient
+  lookup.fillStyle = gradH
   lookup.fillRect(0, 0, w, h)
 }
 
@@ -87,7 +87,7 @@ const zoom = (lookup) => {
   lookup.fill()
 }
 
-const noiz = (lookup) => {
+const dust = (lookup) => {
   const { width: w, height: h } = lookup.canvas
   const area = w * h
 
@@ -129,7 +129,7 @@ Array.from(images).map(img => img.alt).forEach((src, i) => {
     zoom(shadow)
     break
   case 2:
-    noiz(shadow)
+    dust(shadow)
     break
   default:
     fork(shadow)
