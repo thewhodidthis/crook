@@ -4,14 +4,21 @@
   (global.crook = factory());
 }(this, (function () { 'use strict';
 
-  // Three ways of handling excess
+  // # Crook
+  // Helps with pixel shifting
+
+  // Clamps the displacement value to the edge of the source image
   const clamp = (v, max) => (v >= max ? max - 1 : Math.max(v, 0));
+
+  // Wraps the displacement value to the other side of the source image
   const pleat = (v, max) => (v >= max || v < 0 ? v + (max * Math.sign(v)) : v);
+
+  // Ignores the math and allows for using the source pixel if the displacement value is out of range
   const skirt = (v, max) => (v >= max || v < 0 ? NaN : v);
 
   // Color shift above and below gray
   const shift = (color, scale) => {
-    const ratio = scale * (color - 128) / 256;
+    const ratio = 0.00390625 * scale * (color - 128);
 
     return Math.sign(ratio) * Math.round(Math.abs(ratio))
   };
@@ -47,7 +54,7 @@
         // Find color map index at pixel coords
         const k = x2 + (y2 * w);
 
-        // Replace input data with color map data at index, or a blank pixel if index negative
+        // Replace input data with color map data at index, or a blank pixel if index negative or NaN
         bitmap[i] = k >= 0 ? mirror[k] : [0, 0, 0, 255];
       }
 
