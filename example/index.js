@@ -1,10 +1,3 @@
-const images = document.querySelectorAll('canvas img')
-const boards = document.querySelectorAll('canvas')
-
-if (window !== window.top) {
-  document.documentElement.classList.add('is-iframe')
-}
-
 const TAU = Math.PI * 2
 const params = [
   {
@@ -110,9 +103,11 @@ const fork = (lookup) => {
   }
 }
 
-Array.from(images).map(img => img.alt).forEach((src, i) => {
+const boards = document.querySelectorAll('canvas')
+
+Array.from(boards).forEach((canvas, i) => {
   const config = params[i]
-  const canvas = boards[i]
+
   const target = canvas.getContext('2d')
   const shadow = canvas.cloneNode().getContext('2d')
 
@@ -153,5 +148,5 @@ Array.from(images).map(img => img.alt).forEach((src, i) => {
     worker.postMessage({ config, source, lookup })
   })
 
-  master.setAttribute('src', src)
+  master.setAttribute('src', canvas.dataset.src)
 })
