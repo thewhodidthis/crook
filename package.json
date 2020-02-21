@@ -2,41 +2,45 @@
   "name": "@thewhodidthis/crook",
   "version": "1.0.8",
   "description": "Helps with pixel shifting",
-  "main": "index",
-  "module": "index.mjs",
-  "homepage": "https://github.com/thewhodidthis/crook#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thewhodidthis/crook.git"
-  },
-  "bugs": {
-    "url": "https://github.com/thewhodidthis/crook/issues"
-  },
-  "scripts": {
-    "pretest": "eslint test.js",
-    "test": "node test.js",
-    "prestart": "eslint index.mjs",
-    "start": "rollup -f cjs index.mjs > index.js",
-    "preexample": "eslint example/index.js",
-    "example": "rollup -f umd -n crook index.mjs > example/crook.js"
-  },
-  "eslintConfig": {
-    "extends": "@thewhodidthis"
-  },
-  "engines": {
-    "node": ">=6.11.0",
-    "npm": ">=3.10.10"
-  },
-  "devDependencies": {
-    "@thewhodidthis/eslint-config": "^0.0.11",
-    "eslint": "^6.8.0",
-    "rollup": "^1.31.1",
-    "tapeless": "^0.0.7"
-  },
   "keywords": [
     "pixels",
     "canvas"
   ],
-  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
-  "license": "Unlicense"
+  "homepage": "https://github.com/thewhodidthis/crook#readme",
+  "bugs": {
+    "url": "https://github.com/thewhodidthis/crook/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thewhodidthis/crook.git"
+  },
+  "license": "ISC",
+  "author": "Sotiri Bakagiannis <sotirios.bakagiannis@gmail.com> (http://thewhodidthis.com)",
+  "main": "index",
+  "module": "index.mjs",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "preexample": "eslint example/index.js",
+    "example": "rollup -f umd -n crook index.mjs > example/crook.js",
+    "prestart": "eslint index.mjs",
+    "start": "rollup -f cjs index.mjs > index.js",
+    "pretest": "eslint test.js",
+    "test": "node test.js"
+  },
+  "eslintConfig": {
+    "extends": "@thewhodidthis"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@thewhodidthis/eslint-config": "^0.0.17",
+    "eslint": "^6.8.0",
+    "rollup": "^1.31.1",
+    "tapeless": "^0.0.9"
+  },
+  "engines": {
+    "node": ">=6.11.0",
+    "npm": ">=3.10.10"
+  }
 }
