@@ -18,27 +18,27 @@ const buffer = document.createElement('canvas').getContext('2d')
 const canvas = Object.assign(buffer.canvas, { width: 180, height: 180 })
 
 const filter = bender({
-    channel: {
-        x: 1,
-        y: 0
-    },
-    scale: {
-        x: canvas.width,
-        y: 0
-    }
+  channel: {
+    x: 1,
+    y: 0
+  },
+  scale: {
+    x: canvas.width,
+    y: 0
+  }
 })
 
 source.addEventListener('load', () => {
-    buffer.drawImage(source, 0, 0)
+  buffer.drawImage(source, 0, 0)
 
-    const pixels = buffer.getImageData(0, 0, canvas.width, canvas.height)
-    const result = filter(pixels, pixels)
+  const pixels = buffer.getImageData(0, 0, canvas.width, canvas.height)
+  const result = filter(pixels, pixels)
 
-    buffer.putImageData(result, 0, 0)
+  buffer.putImageData(result, 0, 0)
 
-    const output = canvas.toDataURL('image/jpeg')
+  const output = canvas.toDataURL('image/jpeg')
 
-    target.setAttribute('src', output)
+  target.setAttribute('src', output)
 })
 
 source.setAttribute('crossOrigin', 'anonymous')
