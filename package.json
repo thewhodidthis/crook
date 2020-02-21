@@ -23,9 +23,9 @@
   },
   "scripts": {
     "preexample": "eslint example/index.js",
-    "example": "rollup -f umd -n crook index.mjs > example/crook.js",
+    "example": "rollup -f umd -n crook -o example/crook.js index.mjs",
     "prestart": "eslint index.mjs",
-    "start": "rollup -f cjs index.mjs > index.js",
+    "start": "rollup -f cjs -o index.js index.mjs",
     "pretest": "eslint test.js",
     "test": "node test.js"
   },
