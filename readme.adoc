@@ -1,13 +1,16 @@
 ## Crook
+
 > For displacement mapping
 
 ### Setup
+
 ```sh
 # Fetch latest from github
 npm i thewhodidthis/crook
 ```
 
 ### Usage
+
 ```js
 import bender from '@thewhodidthis/crook'
 
