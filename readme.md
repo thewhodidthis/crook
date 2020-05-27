@@ -1,15 +1,18 @@
-## Crook
+## about
 
-> For displacement mapping
+Implements [displacement mapping](https://help.adobe.com/en_US/as3/dev/WS5b3ccc516d4fbf351e63e3d118a9b90204-7da2.html) in a web worker friendly manner.
 
-### Setup
+## setup
+
+Fetch latest from GitHub,
 
 ```sh
-# Fetch latest from github
 npm i thewhodidthis/crook
 ```
 
-### Usage
+## usage
+
+Mapping a random image onto itself,
 
 ```js
 import bender from '@thewhodidthis/crook'
@@ -47,3 +50,7 @@ source.addEventListener('load', () => {
 source.setAttribute('crossOrigin', 'anonymous')
 source.setAttribute('src', `//source.unsplash.com/random/${canvas.width}x${canvas.height}`)
 ```
+
+## see also
+
+- [Pixel bending with butter and crook](https://thewhodidthis.com/pixel-bending-with-butter-and-crook/)
