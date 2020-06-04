@@ -4,16 +4,16 @@ Implements [displacement mapping](https://help.adobe.com/en_US/as3/dev/WS5b3ccc5
 
 ## setup
 
-Fetch latest from GitHub directly,
+Fetch latest from GitHub directly:
 
 ```sh
 # Includes ESM and CJS versions
-npm i thewhodidthis/crook
+npm install thewhodidthis/crook
 ```
 
 ## usage
 
-Mapping a random image onto itself,
+Mapping a random image onto itself:
 
 ```js
 import bender from '@thewhodidthis/crook'
