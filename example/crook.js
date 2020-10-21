@@ -55,7 +55,7 @@
         const k = x2 + (y2 * w);
 
         // Replace input data with color map data at index, or a blank pixel if index negative or NaN
-        bitmap[i] = k >= 0 ? mirror[k] : [0, 0, 0, 255];
+        bitmap[i] = k >= 0 ? mirror[k] : 0;
       }
 
       return target
