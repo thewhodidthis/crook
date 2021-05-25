@@ -1,8 +1,7 @@
-'use strict'
+import assert from 'tapeless'
+import createFilter from './main.js'
 
-const { equal } = require('tapeless')
-const createFilter = require('./')
-
+const { equal } = assert
 const filter = createFilter()
 const { data } = filter()
 
