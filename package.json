@@ -19,13 +19,12 @@
   "type": "module",
   "exports": "./main.js",
   "main": "./main.js",
-  "module": "./main.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
     "preexample": "eslint example/index.js",
-    "example": "rollup -f umd -n crook -o example/crook.js main.js",
+    "example": "esbuild --bundle --global-name=crook --outfile=example/crook.js main.js",
     "prestart": "eslint main.js",
     "start": "npm run example",
     "pretest": "eslint test.js",
@@ -36,8 +35,8 @@
   },
   "devDependencies": {
     "@thewhodidthis/eslint-config": "^1.0.2",
+    "esbuild": "^0.12.5",
     "eslint": "^7.27.0",
-    "rollup": "^2.49.0",
     "tapeless": "^1.0.4"
   },
   "engines": {
