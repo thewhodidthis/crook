@@ -7,7 +7,7 @@ Implements [displacement mapping](https://help.adobe.com/en_US/as3/dev/WS5b3ccc5
 Fetch latest from GitHub directly:
 
 ```sh
-# Includes ESM and CJS versions
+# Of type module, Deno friendly
 npm install thewhodidthis/crook
 ```
 
