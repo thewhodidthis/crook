@@ -23,21 +23,12 @@
     "example": "example"
   },
   "scripts": {
-    "preexample": "eslint example/index.js",
-    "example": "esbuild --bundle --global-name=crook --outfile=example/crook.js main.js",
-    "prestart": "eslint main.js",
-    "start": "npm run example",
-    "pretest": "eslint test.js",
+    "start": "esbuild --bundle --global-name=crook --outfile=example/crook.js main.js",
     "test": "node test.js"
   },
-  "eslintConfig": {
-    "extends": "@thewhodidthis"
-  },
   "devDependencies": {
-    "@thewhodidthis/eslint-config": "^1.0.3",
-    "esbuild": "^0.12.5",
-    "eslint": "^7.27.0",
-    "tapeless": "^1.0.5"
+    "esbuild": "^0.12.12",
+    "tapeless": "^2.0.1"
   },
   "engines": {
     "node": ">=14.17.0",
