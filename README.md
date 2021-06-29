@@ -4,7 +4,7 @@ Implements [displacement mapping](https://help.adobe.com/en_US/as3/dev/WS5b3ccc5
 
 ## setup
 
-Fetch latest from GitHub directly:
+Download from GitHub directly:
 
 ```sh
 # Of type module, Deno friendly
