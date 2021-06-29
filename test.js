@@ -1,4 +1,4 @@
-import assert from 'tapeless'
+import { assert, report } from 'tapeless'
 import createFilter from './main.js'
 
 const { equal } = assert
@@ -18,3 +18,5 @@ const result = filter(source, lookup)
 equal
   .describe('input/output size is a match', 'will operate')
   .test(result.data.length, source.data.length)
+
+report()
