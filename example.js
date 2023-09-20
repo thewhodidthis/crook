@@ -109,6 +109,7 @@ Array.from(boards).forEach((canvas, i) => {
   const config = params[i]
 
   const target = canvas.getContext("2d")
+  const buffer = canvas.cloneNode().getContext("2d")
   const shadow = canvas.cloneNode().getContext("2d")
 
   const { width: w, height: h } = canvas
@@ -135,9 +136,9 @@ Array.from(boards).forEach((canvas, i) => {
   const master = document.createElement("img")
 
   master.addEventListener("load", () => {
-    target.drawImage(master, 0, 0)
+    buffer.drawImage(master, 0, 0)
 
-    const source = target.getImageData(0, 0, w, h)
+    const source = buffer.getImageData(0, 0, w, h)
     const lookup = shadow.getImageData(0, 0, w, h)
 
     worker.postMessage({ config, source, lookup })
