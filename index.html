@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Helps with pixel shifting.">
+    <title>crook.js</title>
+    <script src="example.js" defer></script>
+    <style>
+      html {
+        font: medium/normal sans-serif;
+        height: 100%;
+      }
+      body {
+        display: grid;
+        margin: 0;
+        min-height: 100%;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      p {
+        text-align: center;
+      }
+      canvas {
+        background: silver center/cover no-repeat;
+        display: block;
+      }
+      img {
+        height: auto;
+        vertical-align: middle;
+      }
+      canvas,
+      img {
+        object-fit: cover;
+        max-width: 100%;
+      }
+      figcaption {
+        margin: 0 2.25rem 0 0.75rem;
+      }
+      figure {
+        font-size: small;
+        margin: auto;
+      }
+      figure figure {
+        display: grid;
+        gap: 1px;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: 1fr 1fr;
+      }
+      span {
+        background: silver;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background: #1e1e1e;
+          color: #efefef;
+        }
+        a {
+          color: inherit;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Images from http://sipi.usc.edu/database/database.php -->
+    <figure>
+      <figure>
+        <span>
+          <img src="elaine.jpg" height="180" width="180" alt="Original: Elaine">
+        </span>
+        <span>
+          <canvas height="180" width="180" data-src="elaine.jpg">
+            <img src="elaine-1.png" height="180" width="180" alt="Screenshot: Elaine processed">
+          </canvas>
+        </span>
+        <span>
+          <canvas height="180" width="180" data-src="elaine.jpg">
+            <img src="elaine-2.png" height="180" width="180" alt="Screenshot: Elaine processed">
+          </canvas>
+        </span>
+        <span>
+          <img src="4.2.07.jpg" height="180" width="180" alt="Original: Peppers">
+        </span>
+        <span>
+          <canvas height="180" width="180" data-src="4.2.07.jpg">
+            <img src="4.2.07-1.png" height="180" width="180" alt="Screenshot: Peppers processed">
+          </canvas>
+        </span>
+        <span>
+          <canvas height="180" width="180" data-src="4.2.07.jpg">
+            <img src="4.2.07-2.png" height="180" width="180" alt="Screenshot: Peppers processed">
+          </canvas>
+        </span>
+      </figure>
+      <figcaption>
+        <p><strong><a href="https://github.com/thewhodidthis/crook">crook.js</a></strong> Helps with pixel shifting</p>
+      </figcaption>
+    </figure>
+  </body>
+</html>
